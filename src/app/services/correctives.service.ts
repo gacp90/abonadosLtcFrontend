@@ -37,6 +37,14 @@ export class CorrectivesService {
   }
 
   /** ================================================================
+   *   LOAD CORRECTIVES QUERY
+  ==================================================================== */
+  loadCorrectivesQuery(query: any){
+    return this.http.post<LoadCorrectives>(`${base_url}/correctives/query`, query, this.headers);
+  }
+
+
+  /** ================================================================
    *   LOAD CORRECTIVES
   ==================================================================== */
   loadCorrectives(desde: number = 0, limite: number = 10){

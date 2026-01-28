@@ -73,10 +73,112 @@ export class DashboardComponent implements OnInit {
           this.cargando = false;
           this.total = abonado.clients!.length;
           this.clients = abonado.clients!;
+          const clientslist = this.clients.map(c => c.client._id);
+          this.query = {
+            ...this.query,
+            client: { $in: clientslist }
+          };
+          this.loadCorrectives()
           
 
         }, (err) => { Swal.fire('Error', err.error.msg, 'error'); });
 
+  }
+
+  /** ======================================================================
+   * LOAD CORRECTIVES
+  ====================================================================== */
+  public correctivos: Corrective[] = []
+  public totalCorrectivos: number = 0;
+  public query: any = {
+    desde: 0,
+    hasta: 50,
+    estado: 'Pendiente',
+    status: true,
+    sort: {date: -1}
+  }
+
+  loadCorrectives(){
+    
+    
+    this.correctivesService.loadCorrectivesQuery(this.query)
+        .subscribe( ({correctives, total}) => {
+          console.log(correctives);
+          
+          this.correctivos = correctives;
+          this.totalCorrectivos = total;
+        }, (err) => {
+          console.log(err);
+          Swal.fire('Error', err.error.msg, 'error');          
+        })
+
+  }
+
+  
+
+  /** ======================================================================
+   * FECHA DE CREACION
+  ====================================================================== */
+  ordenChange(orden: string ){
+
+    if (orden === 'Primeros') {
+      this.query.sort.date = 1
+    }else if (orden === 'Ultimos') {
+      this.query.sort.date = -1
+    }
+
+    this.loadCorrectives();
+
+  }
+
+  /** ================================================================
+   *   CHANGE ESTADO
+  ==================================================================== */
+  estadoChange( estado: string ){
+
+    this.query.estado = estado;
+
+    if (estado === 'Todos') {
+      delete this.query.estado;
+    }
+
+    this.loadCorrectives();
+
+  }
+
+  /** ================================================================
+   *   CAMBIAR PAGINA
+  ==================================================================== */
+  @ViewChild('mostrar') mostrar!: ElementRef;
+  cambiarPaginaCorrectivos(valor: number){
+        
+    this.query.desde += valor;
+
+    if (this.query.desde < 0) {
+      this.query.desde = 0;
+    }
+    
+    this.loadCorrectives();
+    
+  }
+
+  /** ======================================================================
+   * SEARCH FOR SUCURSAL
+  ====================================================================== */
+  searchForSucursal(suc: string){
+
+    if (suc === 'Todos') {
+      const clientslist = this.clients.map(c => c.client._id);
+      this.query = {
+        ...this.query,
+        client: { $in: clientslist }
+      };
+    }else{
+      this.query.client = suc;
+    }
+
+    this.loadCorrectives();
+    
   }
 
   /** ======================================================================
@@ -106,7 +208,6 @@ export class DashboardComponent implements OnInit {
   /** ================================================================
    *   CAMBIAR PAGINA
   ==================================================================== */
-  @ViewChild('mostrar') mostrar!: ElementRef;
   cambiarPagina (valor: number){
     
     this.limite = Number(this.mostrar.nativeElement.value);

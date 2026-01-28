@@ -1,4 +1,4 @@
-<div class="row">
+<div class="row mb-3">
     <div class="col-12">
         <div class="card">
 
@@ -48,16 +48,167 @@
                             </tr>
 
                         </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="row">
+    <div class="col-12">
+
+        <div class="card">
+            <div class="card-body">
+                <h4 class="card-title">Lista de mantenimientos correctivos</h4>
+
+                <div class="row m-t-40">
+
+                    <!-- Column -->
+                    <div class="col-md-6 col-lg-3 col-xlg-3">
+                        <div class="card">
+                            <div class="box bg-info text-center">
+                                <h1 class="font-light text-white"> {{ totalCorrectivos }} </h1>
+                                <h6 class="text-white">Total Correctivos</h6>
+                            </div>
+                        </div>
+                    </div>
+
+                </div>
+
+                <!-- SEARCH BTN NEW -->
+                <div class="d-flex justify-content-between flex-wrap mt-1">
+
+                    <div class="my-2">
+
+                        <div class="d-flex flex-wrap gap-2">
+
+                            <div>
+                                <label for="mostrar" class="my-2">Sucursal: </label>
+                                <select name="" id="" #scs (change)="searchForSucursal(scs.value)">
+                                    <option value="Todos">Todos</option>
+                                    <option *ngFor="let sucursal of clients" [value]="sucursal.client._id" > {{ sucursal.client.name }} </option>
+                                </select>
+                            </div>
+
+                            <div>
+                                <label for="mostrar" class="my-2">Ordenar: </label>
+                                <select name="" id="" #ordenar (change)="ordenChange(ordenar.value)">
+                                    <option value="Primeros">Primeros</option>
+                                    <option value="Ultimos">Ultimos</option>
+                                </select>
+                            </div>
+
+                            <div>
+                                <label for="mostrar" class="my-2">Estado: </label>
+                                <select name="" id="" [value]="query.estado" #estado (change)="estadoChange(estado.value)">
+                                    <option value="Todos">Todos</option>
+                                    <option value="Pendiente">Pendiente</option>
+                                    <option value="Terminado">Terminado</option>
+                                </select>
+                            </div>
+
+                            <div>
+                                <label for="mostrar" class="my-2">Mostrar: </label>
+                                <select name="" id="" [value]="limite" #mostrar (change)="limiteChange(mostrar.value)">
+                                    <option value="10">10</option>
+                                    <option value="25">25</option>
+                                    <option value="50">50</option>
+                                    <option value="100">100</option>
+                                    <option value="250">250</option>
+                                    <option value="500">500</option>
+                                </select>
+                            </div>
+                        </div>
+
+
+                    </div>
+                </div>
+                <!-- SEARCH BTN NEW -->
+
+                <div class="table-responsive">
+                    <table id="demo-foo-addrow" class="table m-t-30 table-hover no-wrap contact-list" data-page-size="10">
+                        <thead>
+                            <tr>
+                                <th>#</th>
+                                <th>Producto</th>
+                                <th>Ubicación</th>
+                                <th>Tecnico</th>
+                                <th>Cliente</th>
+                                <th>Estado</th>
+                                <th>Fecha</th>
+                                <th>Action</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+
+                            <tr *ngIf="correctivos.length === 0">
+                                <td colspan="7">
+                                    <h3 class="mb-0 text-center"> Aun no existen registros de mantenimientos correctivos... </h3>
+                                </td>
+                            </tr>
+
+                            <ng-container *ngIf="correctivos.length > 0">
+
+                                <tr *ngFor="let corrective of correctivos">
+                                    <td class="align-middle">
+                                        <a [routerLink]="['/dashboard/correctivo', corrective.coid ]" class="text-decoration-none text-info pointer">
+                                            {{ corrective.control }} 
+                                        </a>
+                                    </td>
+                                    <td class="align-middle"> 
+                                        <a [routerLink]="['/dashboard/producto/', corrective.product._id!]">
+                                            {{ corrective.product.code }} 
+                                        </a>
+                                    </td>
+                                    <td class="align-middle"> {{ corrective.product.ubicacion || 'Sin ubicación' }} </td>
+                                    <td class="align-middle"> {{ corrective.staff.name }} </td>
+                                    <td class="align-middle" data-toggle="tooltip" data-placement="top" title="{{corrective.client.name}}" data-original-title="Tooltip on top">
+                                        {{ corrective.client.name }}
+                                    </td>
+                                    <td class="align-middle">
+                                        <span *ngIf="!corrective.status" class="label label-danger"> Eliminado </span>
+                                        <span *ngIf="corrective.status && corrective.estado == 'Pendiente'" class="label label-warning"> {{ corrective.estado }} </span>
+                                        <span *ngIf="corrective.status && corrective.estado == 'Terminado'" class="label label-success"> {{ corrective.estado }} </span>
+                                    </td>
+                                    <td class="align-middle">
+
+                                        <p *ngIf="!corrective.checkin" class="mb-0 text-muted">
+                                            <small>
+                                                {{ corrective.date | date:'short' }} 
+                                            </small>
+                                        </p>
+
+                                        <p *ngIf="corrective.checkin" class="mb-0 text-success">
+                                            <small>
+                                                {{ corrective.checkin | date:'short' }} 
+                                            </small>
+                                        </p>
+
+                                        <p *ngIf="corrective.checkout" class="mb-0 text-danger">
+                                            <small>
+                                                {{ corrective.checkin | date:'medium' }} 
+                                            </small>
+                                        </p>
+                                    </td>
+                                    <td class="align-middle">
+
+                                        <a [routerLink]="['/dashboard/correctivo', corrective.coid ]" class="text-decoration-none text-info pointer">
+                                            <i class="mdi mdi-call-made"></i>
+                                        </a>
+                                    </td>
+                                </tr>
+
+                            </ng-container>
+                        </tbody>
                         <tfoot>
                             <tr>
 
-                                <td colspan="5">
-
+                                <td colspan="7">
                                     <div class="btn-group" role="group" aria-label="First group">
-                                        <button [disabled]="desde === 0" (click)="cambiarPagina(-10)" type="button" class="btn btn-dark text-white">Atras</button>
-                                        <button [disabled]="( desde + limite ) >= total" (click)="cambiarPagina(10)" type="button" class="btn btn-dark text-white">Siguiente</button>
+                                        <button [disabled]="query.desde === 0" (click)="cambiarPaginaCorrectivos(query.hasta * -1)" type="button" class="btn btn-dark text-white">Atras</button>
+                                        <button [disabled]="( query.desde + query.hasta ) >= totalCorrectivos" (click)="cambiarPaginaCorrectivos(query.hasta)" type="button" class="btn btn-dark text-white">Siguiente</button>
                                     </div>
-
                                 </td>
                             </tr>
                         </tfoot>
