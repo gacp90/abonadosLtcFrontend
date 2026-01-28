@@ -9,6 +9,9 @@ import { CorrectivesService } from '../../services/correctives.service';
 import { FileUploadService } from '../../services/file-upload.service';
 import { Corrective } from '../../models/correctives.model';
 
+
+import { environment } from '../../../environments/environment.prod';
+
 @Component({
   selector: 'app-correctivo',
   templateUrl: './correctivo.component.html',
@@ -16,6 +19,8 @@ import { Corrective } from '../../models/correctives.model';
   ]
 })
 export class CorrectivoComponent implements OnInit {
+
+  public admin_url: string = environment.admin_url;
 
   constructor(  private activatedRoute: ActivatedRoute,
                 private correctivesService: CorrectivesService,
