@@ -10,7 +10,7 @@
   admin_url: 'https://soporte.castitoner.com/api'
   
   tecid: '627fbe0d55135b05588c51cc',
-  base_url: 'https://www.admin.lineatecnologicadecolombia.com/api',
+  base_url: 'https://clientes.litecoriente.com/api',
   admin_url: 'https://www.admin.lineatecnologicadecolombia.com/api'
   
   tecid: '627fbe0d55135b05588c51cc',
@@ -23,7 +23,7 @@
 export const environment = {
   production: false,
   tecid: '627fbe0d55135b05588c51cc',
-  base_url: 'http://localhost:3000/api',
+  base_url: 'https://clientes.litecoriente.com/api',
   admin_url: 'https://www.admin.lineatecnologicadecolombia.com/api'
 };
 
